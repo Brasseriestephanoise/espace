@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1D2420">
+<title>Espace brasserie</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="https://img.mailinblue.com/3245010/images/content_library/original/6aecb713e6b1162f2cd80458.png">
+<link rel="icon" href="https://img.mailinblue.com/3245010/images/content_library/original/6aecb713e6b1162f2cd80458.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:#F3F5F2;color:#1D2420;font-family:'Source Sans 3',system-ui,sans-serif;display:flex;flex-direction:column}
+header{background:#1D2420;color:#fff;padding:18px 24px;display:flex;align-items:center;gap:14px}
+header img{width:40px;height:40px;border-radius:8px;background:#fff}
+header b{font-family:'Barlow Condensed',sans-serif;font-size:26px;letter-spacing:.02em}
+main{flex:1;width:100%;max-width:880px;margin:0 auto;padding:32px 16px 48px;display:flex;flex-direction:column;gap:20px}
+h1{margin:0;font-family:'Barlow Condensed',sans-serif;font-size:32px}
+.sub{margin:-12px 0 0;color:#5E6B64}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+a.tile{display:flex;flex-direction:column;gap:8px;padding:24px;border-radius:14px;background:#fff;border:1px solid #DCE3DE;color:#1D2420;text-decoration:none;transition:transform .1s,box-shadow .1s}
+a.tile:hover,a.tile:focus-visible{transform:translateY(-2px);box-shadow:0 6px 18px rgba(29,36,32,.12);outline:none}
+a.tile:focus-visible{border-color:#17936F}
+.tag{align-self:flex-start;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:3px 9px;border-radius:5px;background:#E2F2EC;color:#17936F}
+.tile.grp .tag{background:#F7F2E8;color:#B4580A}
+.tile strong{font-family:'Barlow Condensed',sans-serif;font-size:28px;line-height:1.1}
+.tile span.d{color:#5E6B64}
+.tile span.go{margin-top:6px;font-weight:700;color:#17936F}
+.tile.grp span.go{color:#B4580A}
+#inst{display:none;align-self:flex-start;font:inherit;font-weight:600;padding:10px 16px;border-radius:8px;border:1px solid #17936F;background:#fff;color:#17936F;cursor:pointer}
+footer{font-size:13px;color:#5E6B64;text-align:center;padding:0 16px 24px}
+</style>
+</head>
+<body>
+<header><img src="https://img.mailinblue.com/3245010/images/content_library/original/6aecb713e6b1162f2cd80458.png" alt=""><b>Espace brasserie</b></header>
+<main>
+  <h1>Bonjour Benjamin</h1>
+  <p class="sub">Vos outils de commande, au même endroit.</p>
+  <div class="grid">
+    <a class="tile" href="https://script.google.com/a/macros/bbvpro.fr/s/AKfycbyzmQ_9y0Sc7fpRuOF4htqSDNCDkZUMUy-HAKTikw7ORMpiltBntdZKg_3fpkgictI/exec?page=brasserie">
+      <span class="tag">Clients pro</span>
+      <strong>Commandes Pro</strong>
+      <span class="d">Clients, produits visibles, disponibilités, commandes reçues, relances.</span>
+      <span class="go">Ouvrir →</span>
+    </a>
+    <a class="tile grp" href="https://brasseriestephanoise.github.io/commande/espace.html">
+      <span class="tag">Ventes groupées</span>
+      <strong>Commandes groupées</strong>
+      <span class="d">Ventes en cours, commandes des participants, distributions.</span>
+      <span class="go">Ouvrir →</span>
+    </a>
+  </div>
+  <button id="inst" type="button">Installer sur cet appareil</button>
+</main>
+<footer>Accès réservé à la brasserie · chaque espace garde sa propre connexion</footer>
+<script>
+let bip=null;const b=document.getElementById('inst');
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();bip=e;b.style.display='block';});
+b.addEventListener('click',async()=>{if(!bip)return;bip.prompt();try{await bip.userChoice;}catch(x){}bip=null;b.style.display='none';});
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
