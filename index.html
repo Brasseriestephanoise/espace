@@ -10,56 +10,95 @@
 <link rel="apple-touch-icon" href="https://img.mailinblue.com/3245010/images/content_library/original/6aecb713e6b1162f2cd80458.png">
 <link rel="icon" href="https://img.mailinblue.com/3245010/images/content_library/original/6aecb713e6b1162f2cd80458.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;background:#F3F5F2;color:#1D2420;font-family:'Source Sans 3',system-ui,sans-serif;display:flex;flex-direction:column}
-header{background:#1D2420;color:#fff;padding:18px 24px;display:flex;align-items:center;gap:14px}
-header img{width:40px;height:40px;border-radius:8px;background:#fff}
-header b{font-family:'Barlow Condensed',sans-serif;font-size:26px;letter-spacing:.02em}
-main{flex:1;width:100%;max-width:880px;margin:0 auto;padding:32px 16px 48px;display:flex;flex-direction:column;gap:20px}
-h1{margin:0;font-family:'Barlow Condensed',sans-serif;font-size:32px}
-.sub{margin:-12px 0 0;color:#5E6B64}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
-a.tile{display:flex;flex-direction:column;gap:8px;padding:24px;border-radius:14px;background:#fff;border:1px solid #DCE3DE;color:#1D2420;text-decoration:none;transition:transform .1s,box-shadow .1s}
-a.tile:hover,a.tile:focus-visible{transform:translateY(-2px);box-shadow:0 6px 18px rgba(29,36,32,.12);outline:none}
-a.tile:focus-visible{border-color:#17936F}
+body{margin:0;min-height:100vh;background:#F3F5F2;color:#1D2420;font:15px/1.45 'Source Sans 3',system-ui,sans-serif;display:flex;flex-direction:column}
+header{background:#1D2420;color:#fff;padding:14px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+header img{width:38px;height:38px;border-radius:8px;background:#fff}
+header b{font:700 25px 'Barlow Condensed',sans-serif;letter-spacing:.02em;flex:1}
+header small{color:#B9C6BE}
+header button{font:inherit;color:#fff;background:none;border:1px solid #4A5650;border-radius:8px;padding:5px 12px;cursor:pointer}
+main{flex:1;width:100%;max-width:960px;margin:0 auto;padding:28px 16px 48px;display:flex;flex-direction:column;gap:18px}
+h1{margin:0;font:700 32px 'Barlow Condensed',sans-serif}
+h2{margin:0;font:700 24px 'Barlow Condensed',sans-serif}
+.sub{margin:-8px 0 0;color:#5E6B64}
+.card{background:#fff;border:1px solid #DCE3DE;border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:12px}
+.login{align-items:center;text-align:center;max-width:460px;margin:20px auto 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+a.tile,button.tile{display:flex;flex-direction:column;gap:8px;padding:22px;border-radius:14px;background:#fff;border:1px solid #DCE3DE;color:#1D2420;text-decoration:none;text-align:left;font:inherit;cursor:pointer;transition:transform .1s,box-shadow .1s}
+.tile:hover,.tile:focus-visible{transform:translateY(-2px);box-shadow:0 6px 18px rgba(29,36,32,.12);outline:none;border-color:#17936F}
 .tag{align-self:flex-start;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:3px 9px;border-radius:5px;background:#E2F2EC;color:#17936F}
-.tile.grp .tag{background:#F7F2E8;color:#B4580A}
-.tile strong{font-family:'Barlow Condensed',sans-serif;font-size:28px;line-height:1.1}
-.tile span.d{color:#5E6B64}
-.tile span.go{margin-top:6px;font-weight:700;color:#17936F}
-.tile.grp span.go{color:#B4580A}
-#inst{display:none;align-self:flex-start;font:inherit;font-weight:600;padding:10px 16px;border-radius:8px;border:1px solid #17936F;background:#fff;color:#17936F;cursor:pointer}
+.tile.grp .tag{background:#F7F2E8;color:#B4580A}.tile.acc .tag{background:#1D2420;color:#fff}
+.tile strong{font:700 27px/1.1 'Barlow Condensed',sans-serif}
+.tile .d{color:#5E6B64}.tile .go{margin-top:4px;font-weight:700;color:#17936F}
+.muted{color:#5E6B64;font-size:13px}.err{color:#B42318;font-weight:600}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:720px}th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:#5E6B64;padding:6px 8px}td{padding:8px;border-top:1px solid #DCE3DE;vertical-align:middle}
+input,select{font:inherit;color:#1D2420;border:1px solid #DCE3DE;border-radius:7px;padding:6px 8px;background:#fff;min-width:0}
+.btn{font:inherit;font-weight:600;padding:7px 13px;border-radius:8px;border:1px solid #17936F;background:#17936F;color:#fff;cursor:pointer}.btn.g{background:#fff;color:#17936F}.btn.r{background:#fff;color:#B42318;border-color:#DCE3DE}.btn:disabled{opacity:.5;cursor:default}
+.confirm{background:#FBEBDD;padding:8px 10px;border-radius:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#1D2420;color:#fff;padding:9px 16px;border-radius:8px}
+#inst{display:none;align-self:flex-start}
 footer{font-size:13px;color:#5E6B64;text-align:center;padding:0 16px 24px}
 </style>
 </head>
 <body>
-<header><img src="https://img.mailinblue.com/3245010/images/content_library/original/6aecb713e6b1162f2cd80458.png" alt=""><b>Espace brasserie</b></header>
-<main>
-  <h1>Bonjour Benjamin</h1>
-  <p class="sub">Vos outils de commande, au même endroit.</p>
-  <div class="grid">
-    <a class="tile" href="https://script.google.com/a/macros/bbvpro.fr/s/AKfycbyzmQ_9y0Sc7fpRuOF4htqSDNCDkZUMUy-HAKTikw7ORMpiltBntdZKg_3fpkgictI/exec?page=brasserie">
-      <span class="tag">Clients pro</span>
-      <strong>Commandes Pro</strong>
-      <span class="d">Clients, produits visibles, disponibilités, commandes reçues, relances.</span>
-      <span class="go">Ouvrir →</span>
-    </a>
-    <a class="tile grp" href="https://brasseriestephanoise.github.io/commande/espace.html">
-      <span class="tag">Ventes groupées</span>
-      <strong>Commandes groupées</strong>
-      <span class="d">Ventes en cours, commandes des participants, distributions.</span>
-      <span class="go">Ouvrir →</span>
-    </a>
-  </div>
-  <button id="inst" type="button">Installer sur cet appareil</button>
-</main>
-<footer>Accès réservé à la brasserie · chaque espace garde sa propre connexion</footer>
+<header><img src="https://img.mailinblue.com/3245010/images/content_library/original/6aecb713e6b1162f2cd80458.png" alt=""><b>Espace brasserie</b><small id="who"></small><button id="out" type="button" hidden>Se déconnecter</button></header>
+<main id="app"><p class="muted">Chargement…</p></main>
+<footer>Accès réservé à la brasserie · connexion avec votre compte Google</footer>
+<div id="toast" hidden></div>
 <script>
-let bip=null;const b=document.getElementById('inst');
-addEventListener('beforeinstallprompt',e=>{e.preventDefault();bip=e;b.style.display='block';});
-b.addEventListener('click',async()=>{if(!bip)return;bip.prompt();try{await bip.userChoice;}catch(x){}bip=null;b.style.display='none';});
-if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+const API="https://script.google.com/macros/s/AKfycbyzmQ_9y0Sc7fpRuOF4htqSDNCDkZUMUy-HAKTikw7ORMpiltBntdZKg_3fpkgictI/exec";
+const GCID="63899726169-e4dgm80hqqk5dv39ei0l2ribeao489qm.apps.googleusercontent.com";
+const GROUPE="https://commandegroupee.labrasseriestephanoise.com/espace.html";
+const $=s=>document.querySelector(s), esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const S={u:null,view:"home",A:null,msg:"",conf:null};
+function toast(t){const e=$("#toast");e.textContent=t;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,2600);}
+async function api(fn,...args){const r=await fetch(API,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({fn,args})});const j=await r.json();if(!j.ok)throw new Error(j.err||"Erreur");return j.r;}
+const store={get(){try{const x=JSON.parse(localStorage.getItem("esp_s")||"null");return x&&x.exp>Date.now()?x:null;}catch(e){return null;}},set(u){try{localStorage.setItem("esp_s",JSON.stringify(Object.assign({},u,{exp:Date.now()+5.5*3600e3})));}catch(e){}},clear(){try{localStorage.removeItem("esp_s");}catch(e){}}};
+function render(){const A=$("#app");$("#out").hidden=!S.u;$("#who").textContent=S.u?(S.u.nom||S.u.email):"";
+ if(!S.u){A.innerHTML=`<section class="card login"><h1>Bienvenue</h1><p class="muted" style="margin:0">Connectez-vous avec votre compte Google pour accéder à vos outils.</p><div id="gbtn"></div>${S.msg?`<p class="err">${esc(S.msg)}</p>`:""}</section>`;gsi();return;}
+ if(S.view==="acces")return vAcces();
+ const m=S.u.mods||[],tiles=[];
+ if(m.includes("pro"))tiles.push(`<a class="tile" href="${esc(S.u.pro+S.u.s)}"><span class="tag">Clients pro</span><strong>Commandes Pro</strong><span class="d">Clients, tri, disponibilités, commandes reçues, relances.</span><span class="go">Ouvrir →</span></a>`);
+ if(m.includes("groupe"))tiles.push(`<a class="tile grp" href="${GROUPE}"><span class="tag">Ventes groupées</span><strong>Commandes groupées</strong><span class="d">Ventes en cours, commandes des participants, distributions.</span><span class="go" style="color:#B4580A">Ouvrir →</span></a>`);
+ if(S.u.role==="admin")tiles.push(`<button class="tile acc" type="button" data-acces><span class="tag">Administration</span><strong>Accès</strong><span class="d">Qui peut ouvrir quels espaces, avec son compte Google.</span><span class="go" style="color:#1D2420">Gérer →</span></button>`);
+ A.innerHTML=`<h1>Bonjour ${esc((S.u.nom||"").split(" ")[0]||"")}</h1><p class="sub">Vos outils, au même endroit.</p><div class="grid">${tiles.join("")||'<p class="muted">Aucun espace ne vous est encore ouvert.</p>'}</div><button id="inst" class="btn g" type="button">Installer sur cet appareil</button>`;
+ if(window.__bip)$("#inst").style.display="block";}
+function vAcces(){const A=$("#app");if(!S.A){A.innerHTML=`<p class="muted">Chargement des accès…</p>`;api("hub_acces",S.u.s).then(a=>{S.A=a;render();}).catch(e=>{toast(e.message);S.view="home";render();});return;}
+ const M=S.A.modules;
+ A.innerHTML=`<div><button class="btn g" type="button" data-home>‹ Accueil</button></div><h1>Accès</h1>
+ <section class="card"><p class="muted" style="margin:0">Chaque personne se connecte avec <b>son compte Google</b> (Gmail ou adresse professionnelle Google). Cochez les espaces qu'elle peut ouvrir. « Retirer » coupe l'accès tout de suite.</p>
+ <div class="tw"><table><thead><tr><th>Nom</th><th>Adresse Google</th>${M.map(m=>`<th style="text-align:center">${esc(m.nom)}</th>`).join("")}<th>Rôle</th><th>Dernière connexion</th><th></th></tr></thead><tbody>
+ ${S.A.people.map(p=>p.owner?`<tr><td><b>${esc(p.nom||"Benjamin")}</b></td><td>${esc(p.email)}</td>${M.map(()=>`<td style="text-align:center">✓</td>`).join("")}<td>Administrateur</td><td class="muted">compte principal</td><td></td></tr>`:
+ `<tr data-p="${esc(p.email)}"><td><input data-f="nom" value="${esc(p.nom)}" aria-label="Nom" style="width:150px"></td><td>${esc(p.email)}</td>${M.map(m=>`<td style="text-align:center"><input type="checkbox" data-m="${m.id}" aria-label="${esc(m.nom)}"${p.mods.includes(m.id)?" checked":""}></td>`).join("")}
+ <td><select data-f="role" aria-label="Rôle"><option value="membre"${p.role!=="admin"?" selected":""}>Membre</option><option value="admin"${p.role==="admin"?" selected":""}>Administrateur</option></select></td><td>${p.last?p.last.split("-").reverse().join("/"):'<span class="muted">jamais</span>'}</td>
+ <td style="white-space:nowrap"><button class="btn g" type="button" data-save>Enregistrer</button> <button class="btn r" type="button" data-del>Retirer</button></td></tr>`).join("")}
+ <tr data-p="" style="background:#F3F5F2"><td><input data-f="nom" placeholder="Prénom Nom" aria-label="Nom" style="width:150px"></td><td><input data-f="email" type="email" placeholder="adresse Google" aria-label="Adresse Google" style="width:230px"></td>${M.map(m=>`<td style="text-align:center"><input type="checkbox" data-m="${m.id}" aria-label="${esc(m.nom)}" checked></td>`).join("")}
+ <td><select data-f="role" aria-label="Rôle"><option value="membre">Membre</option><option value="admin">Administrateur</option></select></td><td></td><td><button class="btn" type="button" data-save>Ajouter</button></td></tr>
+ </tbody></table></div>${S.conf?`<div class="confirm">Retirer l'accès de ${esc(S.conf)} ? <button class="btn r" type="button" data-delok>Oui, retirer</button><button class="btn g" type="button" data-delno>Annuler</button></div>`:""}
+ <p class="muted" style="margin:0"><b>Membre</b> : ouvre les espaces cochés. <b>Administrateur</b> : en plus, gère cette page. Commandes groupées garde aussi sa propre liste d'accès : pensez à y ajouter la personne (<a href="${GROUPE}">espace Commandes groupées</a> › Accès).</p></section>`;}
+function readRow(tr){const o={email:tr.dataset.p||(tr.querySelector('[data-f="email"]')||{}).value||"",nom:tr.querySelector('[data-f="nom"]').value.trim(),role:tr.querySelector('[data-f="role"]').value,mods:[...tr.querySelectorAll("[data-m]")].filter(i=>i.checked).map(i=>i.dataset.m)};o.email=o.email.trim();return o;}
+document.addEventListener("click",async e=>{const t=e.target.closest("button");if(!t)return;const d=t.dataset;
+ if(t.id==="out"){store.clear();try{google.accounts.id.disableAutoSelect();}catch(x){}S.u=null;S.msg="";S.view="home";S.A=null;render();return;}
+ if(t.id==="inst"&&window.__bip){window.__bip.prompt();window.__bip=null;t.style.display="none";return;}
+ if(d.acces!==undefined){S.view="acces";S.A=null;render();return;}
+ if(d.home!==undefined){S.view="home";render();return;}
+ if(d.save!==undefined){const o=readRow(t.closest("tr"));if(!o.email){toast("Indiquez l'adresse Google");return;}t.disabled=true;try{S.A=await api("hub_accesSave",S.u.s,o);toast("Accès enregistré : "+o.email);}catch(x){toast(x.message);}render();return;}
+ if(d.del!==undefined){S.conf=t.closest("tr").dataset.p;render();return;}
+ if(d.delno!==undefined){S.conf=null;render();return;}
+ if(d.delok!==undefined){try{S.A=await api("hub_accesDel",S.u.s,S.conf);toast("Accès retiré");}catch(x){toast(x.message);}S.conf=null;render();return;}
+});
+let gsiDone=false;
+function gsi(){if(!window.google||!google.accounts||!google.accounts.id){setTimeout(gsi,200);return;}
+ if(!gsiDone){gsiDone=true;google.accounts.id.initialize({client_id:GCID,callback:onCred,auto_select:true,cancel_on_tap_outside:false});}
+ const b=$("#gbtn");if(b){google.accounts.id.renderButton(b,{theme:"filled_blue",size:"large",text:"signin_with",shape:"pill",locale:"fr"});google.accounts.id.prompt();}}
+async function onCred(r){S.msg="";$("#app").innerHTML='<p class="muted">Connexion…</p>';
+ try{const u=await api("hub_login",r.credential);if(!u.ok){S.msg=u.msg;S.u=null;try{google.accounts.id.disableAutoSelect();}catch(x){}render();return;}S.u=u;store.set(u);S.view="home";render();}
+ catch(e){S.msg="Connexion impossible : "+e.message;render();}}
+addEventListener("beforeinstallprompt",e=>{e.preventDefault();window.__bip=e;const b=$("#inst");if(b)b.style.display="block";});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+(async()=>{const s=store.get();if(s){S.u=s;render();try{const r=await api("hub_session",s.s);if(r.ok){S.u=Object.assign({},s,r);store.set(S.u);render();}else{store.clear();S.u=null;render();}}catch(e){}}else render();})();
 </script>
 </body>
 </html>
