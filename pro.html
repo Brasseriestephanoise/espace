@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Espace brasserie – Commandes Pro</title>
+<link rel="icon" href="https://img.mailinblue.com/3245010/images/content_library/original/6aecb713e6b1162f2cd80458.png">
+</head><body style="margin:0;background:#F3F5F2;font-family:Arial,sans-serif">
+<p id="ld" style="text-align:center;padding:80px 20px;color:#5E6B64">Chargement de l’espace Commandes Pro…</p>
+<script>
+(function(){
+var API="https://script.google.com/macros/s/AKfycbyzmQ_9y0Sc7fpRuOF4htqSDNCDkZUMUy-HAKTikw7ORMpiltBntdZKg_3fpkgictI/exec";
+var s=new URLSearchParams(location.search).get("s")||"";try{history.replaceState(null,"",location.pathname);}catch(e){}if(!s)try{var x=JSON.parse(localStorage.getItem("esp_s")||"null");if(x&&x.exp>Date.now())s=x.s;}catch(e){}
+if(!s){location.replace("./");return;}
+function fail(m){document.getElementById("ld").innerHTML=(m||"Impossible de charger l’espace pour le moment.")+'<br><br><a href="'+location.href+'">Réessayer</a> · <a href="./">Accueil</a>';}
+var shim='<script>(function(){var A="'+API+'",H={};var run=new Proxy({},{get:function(_,k){if(k==="withSuccessHandler")return function(f){H.ok=f;return run;};if(k==="withFailureHandler")return function(f){H.ko=f;return run;};return function(){var a=[].slice.call(arguments),ok=H.ok,ko=H.ko;H={};fetch(A,{method:"POST",credentials:"omit",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({fn:k,args:a})}).then(function(r){return r.json();}).then(function(j){if(j.ok){ok&&ok(j.r);}else{ko&&ko(new Error(j.err||"Erreur"));}}).catch(function(){ko&&ko(new Error("Connexion impossible, réessayez dans un instant."));});};}});window.google={script:{run:run}};})();<\/script>';
+fetch(API+"?api=espace&s="+encodeURIComponent(s),{credentials:"omit"}).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(html){
+ if(html.indexOf("<script")<0){document.open();document.write(html);document.close();return;}
+ html=html.replace("<head>","<head>"+shim+'<meta name="robots" content="noindex, nofollow">');
+ document.open();document.write(html);document.close();
+}).catch(function(){fail();});
+})();
+</script>
+</body></html>
