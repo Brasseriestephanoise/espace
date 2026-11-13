@@ -6,7 +6,20 @@
   "scope": "./",
   "display": "standalone",
   "background_color": "#1D2420",
-  "theme_color": "#1D2420",
+  "theme_color": "#169164",
   "lang": "fr",
-  "icons": [{"src": "https://img.mailinblue.com/3245010/images/content_library/original/6aecb713e6b1162f2cd80458.png", "sizes": "512x512", "type": "image/png", "purpose": "any"}]
+  "icons": [
+    {
+      "src": "icon-espace-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-espace.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
 }
