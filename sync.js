@@ -59,6 +59,8 @@
     const info = {}; ids.forEach(id => // coordonnées de tous les clients (impayés + base) : téléphones pour les tournées
       { const c = C[id]; if (!c) return; const E = c.Emails || [];
       info[id] = { cn: nm((c.FirstName || '') + ' ' + (c.LastName || '')), ph: (c.Phones || []).map(p => ({ v: p.Value, l: nm(p.Label || '') })), em: (E.some(e => e.Invoicing) ? E.filter(e => e.Invoicing) : E).map(e => e.Value), sp: c.SalespersonId || 0, dd: c.DirectDebitStatus || '' }; });
+    // 3 bis. Annuaire complet des clients Super G (pour rattacher des contacts à d'anciens clients)
+    let dir = []; try { dir = (await J('contacts/list', { Query: '', Limit: 5000 })).map(c => [String(c.Id), nm(c.CompanyName) || nm((c.FirstName || '') + ' ' + (c.LastName || '')), nm(c.Postcode || ''), nm(c.City || '')]).filter(x => x[1]); } catch (e) {}
     // 4. Grilles tarifaires et prix personnalisés
     step(71, 'Grilles tarifaires…'); const toPrices = g => { const o = {}; (g && g.Prices || []).forEach(p => { const pr = R2P[p.RecipeId], f = K2F[p.PackageId]; if (!pr || !f) return; const v = p.Price / 1e6; o[pr + '|' + f] = Math.round((g.IncludesVat ? v / 1.2 : v) * 100) / 100; }); return o; };
     const gids = [...new Set([1, 2, 3, 4, 20, 1026].concat(prep.ids.map(id => (C[id] || {}).PriceGroupId).filter(Boolean)))]; const grids = {};
@@ -87,7 +89,7 @@
     // Poids habituel d'une commande par client (kg), d'après les volumes vendus par conditionnement depuis 2024.
     const uk = {}; Object.keys(pkg).forEach(pid => { const w = W[pid]; if (!w || !w[1]) return; Object.keys(pkg[pid]).forEach(cid => { const v = Object.values(pkg[pid][cid]).reduce((t, y) => t + (y[1] || 0), 0); uk[cid] = (uk[cid] || 0) + v / w[1] * w[0] / 1000; }); });
     Object.keys(uk).forEach(cid => { uk[cid] = Math.round(uk[cid] / Math.max(1, (dates[cid] || []).length)); });
-    await post('setSnap2', [KEY, await gz64({ at: now.toISOString(), dur, pay, info, rec: recent, rep: { cli, rec, pkg, recN, pkgN, dates }, load, uk, w: W })]);
+    await post('setSnap2', [KEY, await gz64({ at: now.toISOString(), dur, pay, info, rec: recent, rep: { cli, rec, pkg, recN, pkgN, dates }, load, uk, w: W, dir })]);
     P.log = [Object.keys(clients).length + ' clients', Object.keys(stock).length + ' bières en stock', open.length + ' commandes en attente', pay.length + ' factures non réglées'];
     finish(true, '✅ Terminé en ' + Math.round((Date.now() - P.t0) / 1000) + ' s : ' + P.log.join(', ') + '.');
   })().catch(e => finish(false, '❌ ' + (e && e.message || e)));
