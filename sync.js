@@ -70,8 +70,10 @@
       grille: grids[c.PriceGroupId] ? c.PriceGroupId : 2, emails: (c.Emails || []).map(e => ({ v: e.Value, s: !!e.Sales, i: !!e.Invoicing, l: !!e.Supply })), perso: perso[id] || {} }; });
     // 5. Stock et commandes en attente de livraison
     step(80, 'Stocks…'); const stock = {}; (await J('stock_movements/list_aggregate')).forEach(e => { const pr = R2P[e.RecipeId], f = K2F[e.PackageId]; if (!pr || !f) return; (stock[pr] = stock[pr] || {})[f] = (stock[pr][f] || 0) + e.Quantity; });
-    const open = L.filter(x => x.Kind === 'Order' && x.DeliverAfter && x.DeliveryStatus !== 'Delivered'); const res = {}; let q = 0;
-    for (const x of open) { const s = await J('invoices/show/' + x.Id); (s.Entries || []).forEach(e => { const pr = R2P[e.RecipeId], f = K2F[e.PackageId]; if (!pr || !f) return; (res[pr] = res[pr] || {})[f] = (res[pr][f] || 0) + (e.Quantity || 0); });
+    const W = {}; try { (await J('packages/list')).forEach(p => { W[p.Id] = [p.Weight || 0, p.Quantity || 0]; }); } catch (e) {} // poids (g) et contenance (ml) des conditionnements
+    const open = L.filter(x => x.Kind === 'Order' && x.DeliverAfter && x.DeliveryStatus !== 'Delivered'); const res = {}, load = []; let q = 0;
+    for (const x of open) { const s = await J('invoices/show/' + x.Id); let kg = 0; (s.Entries || []).forEach(e => { const w = W[e.PackageId]; if (w) kg += (e.Quantity || 0) * w[0] / 1000; });
+      load.push([String(name2id[nm(x.ContactComputedName)] || (s.Contact && s.Contact.Id) || ''), x.Ref, d10(x.DeliverAfter), Math.round(kg * 10) / 10, x.TotalExcludingVat / 100]); (s.Entries || []).forEach(e => { const pr = R2P[e.RecipeId], f = K2F[e.PackageId]; if (!pr || !f) return; (res[pr] = res[pr] || {})[f] = (res[pr][f] || 0) + (e.Quantity || 0); });
       step(80 + 8 * (++q) / Math.max(1, open.length), 'Commandes en attente ' + q + '/' + open.length + '…'); await sleep(100); }
     if (Object.keys(stock).length < 8 || !grids[2] || Object.keys(grids[2]).length < 20 || Object.keys(clients).length < prep.ids.length * 0.8) throw new Error('Données Super G incomplètes : rien n’a été remplacé.');
     // 6. Envoi
@@ -79,7 +81,10 @@
     step(89, 'Envoi des stocks et des prix…'); await post('setSnap', [KEY, await gz64({ stock, res, grids, clients, date })]);
     const pay = unpaid.map(x => ({ id: x.Id, ref: x.Ref, cid: String(name2id[nm(x.ContactComputedName)] || ''), nom: nm(x.ContactComputedName), date: d10(x.CreatedAt), due: d10(x.DueAt), ttc: x.TotalIncludingVat / 100, ht: x.TotalExcludingVat / 100, pm: x.PaymentMethod || '' }));
     step(94, 'Envoi des impayés et des ventes…'); const dur = Math.round((Date.now() - P.t0) / 1000);
-    await post('setSnap2', [KEY, await gz64({ at: now.toISOString(), dur, pay, info, rec: recent, rep: { cli, rec, pkg, recN, pkgN, dates } })]);
+    // Poids habituel d'une commande par client (kg), d'après les volumes vendus par conditionnement depuis 2024.
+    const uk = {}; Object.keys(pkg).forEach(pid => { const w = W[pid]; if (!w || !w[1]) return; Object.keys(pkg[pid]).forEach(cid => { const v = Object.values(pkg[pid][cid]).reduce((t, y) => t + (y[1] || 0), 0); uk[cid] = (uk[cid] || 0) + v / w[1] * w[0] / 1000; }); });
+    Object.keys(uk).forEach(cid => { uk[cid] = Math.round(uk[cid] / Math.max(1, (dates[cid] || []).length)); });
+    await post('setSnap2', [KEY, await gz64({ at: now.toISOString(), dur, pay, info, rec: recent, rep: { cli, rec, pkg, recN, pkgN, dates }, load, uk, w: W })]);
     P.log = [Object.keys(clients).length + ' clients', Object.keys(stock).length + ' bières en stock', open.length + ' commandes en attente', pay.length + ' factures non réglées'];
     finish(true, '✅ Terminé en ' + Math.round((Date.now() - P.t0) / 1000) + ' s : ' + P.log.join(', ') + '.');
   })().catch(e => finish(false, '❌ ' + (e && e.message || e)));
