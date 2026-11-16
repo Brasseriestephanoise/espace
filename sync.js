@@ -73,7 +73,9 @@
     const W = {}; try { (await J('packages/list')).forEach(p => { W[p.Id] = [p.Weight || 0, p.Quantity || 0]; }); } catch (e) {} // poids (g) et contenance (ml) des conditionnements
     const open = L.filter(x => x.Kind === 'Order' && x.DeliverAfter && x.DeliveryStatus !== 'Delivered'); const res = {}, load = []; let q = 0;
     for (const x of open) { const s = await J('invoices/show/' + x.Id); let kg = 0; (s.Entries || []).forEach(e => { const w = W[e.PackageId]; if (w) kg += (e.Quantity || 0) * w[0] / 1000; });
-      load.push([String(name2id[nm(x.ContactComputedName)] || (s.Contact && s.Contact.Id) || ''), x.Ref, d10(x.DeliverAfter), Math.round(kg * 10) / 10, x.TotalExcludingVat / 100]); (s.Entries || []).forEach(e => { const pr = R2P[e.RecipeId], f = K2F[e.PackageId]; if (!pr || !f) return; (res[pr] = res[pr] || {})[f] = (res[pr][f] || 0) + (e.Quantity || 0); });
+      const lid = String(name2id[nm(x.ContactComputedName)] || (s.Contact && s.Contact.Id) || ''); let lcp = nm((C[lid] || {}).Postcode || (s.Contact && s.Contact.Postcode));
+      if (!lcp && lid) { try { C[lid] = C[lid] || await J('contacts/show/' + lid); lcp = nm(C[lid].Postcode); } catch (e) {} }
+      load.push([lid, x.Ref, d10(x.DeliverAfter), Math.round(kg * 10) / 10, x.TotalExcludingVat / 100, lcp, nm(x.ContactComputedName)]); (s.Entries || []).forEach(e => { const pr = R2P[e.RecipeId], f = K2F[e.PackageId]; if (!pr || !f) return; (res[pr] = res[pr] || {})[f] = (res[pr][f] || 0) + (e.Quantity || 0); });
       step(80 + 8 * (++q) / Math.max(1, open.length), 'Commandes en attente ' + q + '/' + open.length + '…'); await sleep(100); }
     if (Object.keys(stock).length < 8 || !grids[2] || Object.keys(grids[2]).length < 20 || Object.keys(clients).length < prep.ids.length * 0.8) throw new Error('Données Super G incomplètes : rien n’a été remplacé.');
     // 6. Envoi
