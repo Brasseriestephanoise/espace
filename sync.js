@@ -56,7 +56,8 @@
     const unpaidIds = unpaid.map(x => String(name2id[nm(x.ContactComputedName)] || '')).filter(Boolean);
     const ids = [...new Set(prep.ids.map(String).concat(unpaidIds))]; const C = {};
     await pool(ids, 3, async id => { C[id] = await J('contacts/show/' + id); }, (d, t) => step(24 + 46 * d / t, 'Fiches clients ' + d + '/' + t + '…'));
-    const info = {}; [...new Set(unpaidIds)].forEach(id => { const c = C[id]; if (!c) return; const E = c.Emails || [];
+    const info = {}; ids.forEach(id => // coordonnées de tous les clients (impayés + base) : téléphones pour les tournées
+      { const c = C[id]; if (!c) return; const E = c.Emails || [];
       info[id] = { ph: (c.Phones || []).map(p => ({ v: p.Value, l: p.Label || '' })), em: (E.some(e => e.Invoicing) ? E.filter(e => e.Invoicing) : E).map(e => e.Value), sp: c.SalespersonId || 0, dd: c.DirectDebitStatus || '' }; });
     // 4. Grilles tarifaires et prix personnalisés
     step(71, 'Grilles tarifaires…'); const toPrices = g => { const o = {}; (g && g.Prices || []).forEach(p => { const pr = R2P[p.RecipeId], f = K2F[p.PackageId]; if (!pr || !f) return; const v = p.Price / 1e6; o[pr + '|' + f] = Math.round((g.IncludesVat ? v / 1.2 : v) * 100) / 100; }); return o; };
