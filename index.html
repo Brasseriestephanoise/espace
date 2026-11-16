@@ -29,7 +29,7 @@ h2{margin:0;font:700 24px 'Barlow Condensed',sans-serif}
 a.tile,button.tile{display:flex;flex-direction:column;gap:8px;padding:22px;border-radius:14px;background:#fff;border:1px solid #DCE3DE;color:#1D2420;text-decoration:none;text-align:left;font:inherit;cursor:pointer;transition:transform .1s,box-shadow .1s}
 .tile:hover,.tile:focus-visible{transform:translateY(-2px);box-shadow:0 6px 18px rgba(29,36,32,.12);outline:none;border-color:#17936F}
 .tag{align-self:flex-start;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:3px 9px;border-radius:5px;background:#E2F2EC;color:#17936F}
-.tile.grp .tag{background:#F7F2E8;color:#B4580A}.tile.acc .tag{background:#1D2420;color:#fff}
+.tile.grp .tag{background:#F7F2E8;color:#B4580A}.tile.pros .tag{background:#E6EEF8;color:#1F5FA8}.tile.acc .tag{background:#1D2420;color:#fff}
 .tile strong{font:700 27px/1.1 'Barlow Condensed',sans-serif}
 .tile .d{color:#5E6B64}.tile .go{margin-top:4px;font-weight:700;color:#17936F}
 .muted{color:#5E6B64;font-size:13px}.err{color:#B42318;font-weight:600}
@@ -61,6 +61,7 @@ function render(){const A=$("#app");$("#out").hidden=!S.u;$("#who").textContent=
  if(S.view==="acces")return vAcces();
  const m=S.u.mods||[],tiles=[];
  if(m.includes("pro"))tiles.push(`<a class="tile" href="${esc(S.u.pro+S.u.s)}"><span class="tag">Clients pro</span><strong>Commandes Pro</strong><span class="d">Clients, tri, disponibilités, commandes reçues, relances.</span><span class="go">Ouvrir →</span></a>`);
+ if(m.includes("prospection"))tiles.push(`<a class="tile pros" href="prospection.html?s=${encodeURIComponent(S.u.s)}"><span class="tag">Terrain</span><strong>Prospection</strong><span class="d">Carte des clients, fiches, échanges, visites.</span><span class="go" style="color:#1F5FA8">Ouvrir →</span></a>`);
  if(m.includes("groupe"))tiles.push(`<a class="tile grp" href="${GROUPE}"><span class="tag">Ventes groupées</span><strong>Commandes groupées</strong><span class="d">Ventes en cours, commandes des participants, distributions.</span><span class="go" style="color:#B4580A">Ouvrir →</span></a>`);
  if(S.u.role==="admin")tiles.push(`<button class="tile acc" type="button" data-acces><span class="tag">Administration</span><strong>Accès</strong><span class="d">Qui peut ouvrir quels espaces, avec son compte Google.</span><span class="go" style="color:#1D2420">Gérer →</span></button>`);
  A.innerHTML=`<h1>Bonjour ${esc((S.u.nom||"").split(" ")[0]||"")}</h1><p class="sub">Vos outils, au même endroit.</p><div class="grid">${tiles.join("")||'<p class="muted">Aucun espace ne vous est encore ouvert.</p>'}</div><button id="inst" class="btn g" type="button">Installer sur cet appareil</button>`;
