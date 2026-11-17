@@ -54,13 +54,16 @@
     for (const x of unpaid) { const k = nm(x.ContactComputedName); if (!name2id[k]) { const s = await J('invoices/show/' + x.Id); if (s && s.Contact && s.Contact.Id) name2id[k] = s.Contact.Id; await sleep(120); } }
     // 3. Fiches clients : base clients + clients avec impayés (coordonnées, grille, prix perso, adresses)
     const unpaidIds = unpaid.map(x => String(name2id[nm(x.ContactComputedName)] || '')).filter(Boolean);
+    // Annuaire complet Super G (rattachement de contacts, nouveaux clients) ; les fiches créées depuis la base ou ayant acheté depuis 2025 sont lues dès cette synchro.
+    let dir = []; try { dir = (await J('contacts/list', { Query: '', Limit: 5000 })).map(c => [String(c.Id), nm(c.CompanyName) || nm((c.FirstName || '') + ' ' + (c.LastName || '')), nm(c.Postcode || ''), nm(c.City || '')]).filter(x => x[1]); } catch (e) {}
+    { const inB = {}; let maxId = 0; prep.ids.forEach(id => { inB[String(id)] = 1; maxId = Math.max(maxId, Number(id) || 0); });
+      const nw = dir.filter(x => !inB[x[0]] && !/client de passage|r[ée]ajustement/i.test(x[1]) && (Number(x[0]) > maxId || (cli[x[0]] && Object.keys(cli[x[0]].m || {}).some(k => k >= '2025')))).map(x => x[0]);
+      if (nw.length && nw.length < 200) prep.ids = prep.ids.concat(nw); }
     const ids = [...new Set(prep.ids.map(String).concat(unpaidIds))]; const C = {};
     await pool(ids, 3, async id => { C[id] = await J('contacts/show/' + id); }, (d, t) => step(24 + 46 * d / t, 'Fiches clients ' + d + '/' + t + '…'));
     const info = {}; ids.forEach(id => // coordonnées de tous les clients (impayés + base) : téléphones pour les tournées
       { const c = C[id]; if (!c) return; const E = c.Emails || [];
       info[id] = { cn: nm((c.FirstName || '') + ' ' + (c.LastName || '')), ph: (c.Phones || []).map(p => ({ v: p.Value, l: nm(p.Label || '') })), em: (E.some(e => e.Invoicing) ? E.filter(e => e.Invoicing) : E).map(e => e.Value), sp: c.SalespersonId || 0, dd: c.DirectDebitStatus || '' }; });
-    // 3 bis. Annuaire complet des clients Super G (pour rattacher des contacts à d'anciens clients)
-    let dir = []; try { dir = (await J('contacts/list', { Query: '', Limit: 5000 })).map(c => [String(c.Id), nm(c.CompanyName) || nm((c.FirstName || '') + ' ' + (c.LastName || '')), nm(c.Postcode || ''), nm(c.City || '')]).filter(x => x[1]); } catch (e) {}
     // 4. Grilles tarifaires et prix personnalisés
     step(71, 'Grilles tarifaires…'); const toPrices = g => { const o = {}; (g && g.Prices || []).forEach(p => { const pr = R2P[p.RecipeId], f = K2F[p.PackageId]; if (!pr || !f) return; const v = p.Price / 1e6; o[pr + '|' + f] = Math.round((g.IncludesVat ? v / 1.2 : v) * 100) / 100; }); return o; };
     const gids = [...new Set([1, 2, 3, 4, 20, 1026].concat(prep.ids.map(id => (C[id] || {}).PriceGroupId).filter(Boolean)))]; const grids = {};
