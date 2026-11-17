@@ -55,7 +55,7 @@
     // 3. Fiches clients : base clients + clients avec impayés (coordonnées, grille, prix perso, adresses)
     const unpaidIds = unpaid.map(x => String(name2id[nm(x.ContactComputedName)] || '')).filter(Boolean);
     // Annuaire complet Super G (rattachement de contacts, nouveaux clients) ; les fiches créées depuis la base ou ayant acheté depuis 2025 sont lues dès cette synchro.
-    let dir = []; try { dir = (await J('contacts/list', { Query: '', Limit: 5000 })).map(c => [String(c.Id), nm(c.CompanyName) || nm((c.FirstName || '') + ' ' + (c.LastName || '')), nm(c.Postcode || ''), nm(c.City || '')]).filter(x => x[1]); } catch (e) {}
+    let dir = []; try { dir = (await J('contacts/list', { Query: '', Limit: 5000 })).map(c => [String(c.Id), nm(c.CompanyName) || nm((c.FirstName || '') + ' ' + (c.LastName || '')), nm(c.Postcode || ''), nm(c.City || ''), nm(c.Nickname || '')]).filter(x => x[1]); } catch (e) {}
     { const inB = {}; let maxId = 0; prep.ids.forEach(id => { inB[String(id)] = 1; maxId = Math.max(maxId, Number(id) || 0); });
       const nw = dir.filter(x => !inB[x[0]] && !/client de passage|r[ée]ajustement/i.test(x[1]) && Number(x[0]) > maxId).map(x => x[0]);
       if (nw.length && nw.length < 200) prep.ids = prep.ids.concat(nw); }
