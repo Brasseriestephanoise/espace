@@ -57,7 +57,7 @@
     // Annuaire complet Super G (rattachement de contacts, nouveaux clients) ; les fiches créées depuis la base ou ayant acheté depuis 2025 sont lues dès cette synchro.
     let dir = []; try { dir = (await J('contacts/list', { Query: '', Limit: 5000 })).map(c => [String(c.Id), nm(c.CompanyName) || nm((c.FirstName || '') + ' ' + (c.LastName || '')), nm(c.Postcode || ''), nm(c.City || '')]).filter(x => x[1]); } catch (e) {}
     { const inB = {}; let maxId = 0; prep.ids.forEach(id => { inB[String(id)] = 1; maxId = Math.max(maxId, Number(id) || 0); });
-      const nw = dir.filter(x => !inB[x[0]] && !/client de passage|r[ée]ajustement/i.test(x[1]) && (Number(x[0]) > maxId || (cli[x[0]] && Object.keys(cli[x[0]].m || {}).some(k => k >= '2025')))).map(x => x[0]);
+      const nw = dir.filter(x => !inB[x[0]] && !/client de passage|r[ée]ajustement/i.test(x[1]) && Number(x[0]) > maxId).map(x => x[0]);
       if (nw.length && nw.length < 200) prep.ids = prep.ids.concat(nw); }
     const ids = [...new Set(prep.ids.map(String).concat(unpaidIds))]; const C = {};
     await pool(ids, 3, async id => { C[id] = await J('contacts/show/' + id); }, (d, t) => step(24 + 46 * d / t, 'Fiches clients ' + d + '/' + t + '…'));
