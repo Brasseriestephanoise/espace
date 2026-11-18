@@ -16,11 +16,17 @@ var s=new URLSearchParams(location.search).get("s")||"";try{history.replaceState
 if(!s){location.replace("./");return;}
 function fail(m){document.getElementById("ld").innerHTML=(m||"Impossible de charger la carte pour le moment.")+'<br><br><a href="'+location.href+'">Réessayer</a> · <a href="./">Accueil</a>';}
 var shim='<script>(function(){var A="'+API+'",H={};var run=new Proxy({},{get:function(_,k){if(k==="withSuccessHandler")return function(f){H.ok=f;return run;};if(k==="withFailureHandler")return function(f){H.ko=f;return run;};return function(){var a=[].slice.call(arguments),ok=H.ok,ko=H.ko;H={};fetch(A,{method:"POST",credentials:"omit",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({fn:k,args:a})}).then(function(r){return r.json();}).then(function(j){if(j.ok){ok&&ok(j.r);}else{ko&&ko(new Error(j.err||"Erreur"));}}).catch(function(){ko&&ko(new Error("Connexion impossible, réessayez dans un instant."));});};}});window.google={script:{run:run}};})();<\/script>';
-fetch(API+"?api=prospection&s="+encodeURIComponent(s),{credentials:"omit"}).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(html){
+function boot(html){
  if(html.indexOf("<script")<0){document.open();document.write(html);document.close();return;}
  html=html.replace("<head>","<head>"+shim+'<meta name="robots" content="noindex, nofollow">');
  document.open();document.write(html);document.close();
-}).catch(function(){fail();});
+}
+// Copie locale de la page (même session) : affichage immédiat, la version fraîche est gardée pour la prochaine ouverture.
+var HK="esp_h_prosp",c=null;try{c=JSON.parse(localStorage.getItem(HK)||"null");}catch(e){}
+function keep(h){if(h.indexOf("<script")<0)return;try{localStorage.setItem(HK,JSON.stringify({s:s,h:h,at:Date.now()}));}catch(e){}}
+var f=fetch(API+"?api=prospection&s="+encodeURIComponent(s),{credentials:"omit"}).then(function(r){if(!r.ok)throw 0;return r.text();});
+if(c&&c.s===s&&c.h){f.then(function(h){if(h!==c.h)keep(h);}).catch(function(){});boot(c.h);}
+else f.then(function(h){keep(h);boot(h);}).catch(function(){fail();});
 })();
 </script>
 </body></html>
