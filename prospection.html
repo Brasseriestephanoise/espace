@@ -16,8 +16,9 @@ var s=new URLSearchParams(location.search).get("s")||"";try{history.replaceState
 if(!s){location.replace("./");return;}
 function fail(m){document.getElementById("ld").innerHTML=(m||"Impossible de charger la carte pour le moment.")+'<br><br><a href="'+location.href+'">Réessayer</a> · <a href="./">Accueil</a>';}
 var shim='<script>(function(){var A="'+API+'",H={};var run=new Proxy({},{get:function(_,k){if(k==="withSuccessHandler")return function(f){H.ok=f;return run;};if(k==="withFailureHandler")return function(f){H.ko=f;return run;};return function(){var a=[].slice.call(arguments),ok=H.ok,ko=H.ko;H={};fetch(A,{method:"POST",credentials:"omit",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({fn:k,args:a})}).then(function(r){return r.json();}).then(function(j){if(j.ok){ok&&ok(j.r);}else{ko&&ko(new Error(j.err||"Erreur"));}}).catch(function(){ko&&ko(new Error("Connexion impossible, réessayez dans un instant."));});};}});window.google={script:{run:run}};})();<\/script>';
-// Écrit la page une fois le chargeur entièrement lu : écrite pendant la lecture, elle s'ajoutait SOUS le message d'attente (bloc #ld resté en haut).
-function bootSafe(h){var go=function(){var l=document.getElementById("ld");if(l&&l.parentNode)l.parentNode.removeChild(l);boot(h);};if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",go);else go();}
+// Retire le message d'attente (#ld) avant d'écrire la page : écrite pendant la lecture du chargeur, elle s'ajoutait SOUS ce message.
+// (Attendre la fin de la lecture bloquait le chargement de la carte : scripts Leaflet externes.)
+function bootSafe(h){var l=document.getElementById("ld");if(l&&l.parentNode)l.parentNode.removeChild(l);boot(h);}
 function boot(html){
  if(html.indexOf("<script")<0){document.open();document.write(html);document.close();return;}
  html=html.replace("<head>","<head>"+shim+'<meta name="robots" content="noindex, nofollow">');
