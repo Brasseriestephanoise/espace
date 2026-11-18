@@ -55,9 +55,12 @@
     // 3. Fiches clients : base clients + clients avec impayés (coordonnées, grille, prix perso, adresses)
     const unpaidIds = unpaid.map(x => String(name2id[nm(x.ContactComputedName)] || '')).filter(Boolean);
     // Annuaire complet Super G (rattachement de contacts, nouveaux clients) ; les fiches créées depuis la base ou ayant acheté depuis 2025 sont lues dès cette synchro.
-    let dir = []; try { dir = (await J('contacts/list', { Query: '', Limit: 5000 })).map(c => [String(c.Id), nm(c.CompanyName) || nm((c.FirstName || '') + ' ' + (c.LastName || '')), nm(c.Postcode || ''), nm(c.City || ''), nm(c.Nickname || '')]).filter(x => x[1]); } catch (e) {}
+    // Date du dernier document (commande ou facture) par nom de client, pour repérer une 1re commande d'une fiche hors base.
+    const LD = {}; L.forEach(x => { const k = nm(x.ContactComputedName).toLowerCase(), d = String(x.CreatedAt || '').slice(0, 10); if (k && d > (LD[k] || '')) LD[k] = d; });
+    // Annuaire : [id, nom, CP, ville, nom commercial, pro (1 = raison sociale renseignée), date du dernier document]
+    let dir = []; try { dir = (await J('contacts/list', { Query: '', Limit: 5000 })).map(c => { const n = nm(c.CompanyName) || nm((c.FirstName || '') + ' ' + (c.LastName || '')); return [String(c.Id), n, nm(c.Postcode || ''), nm(c.City || ''), nm(c.Nickname || ''), nm(c.CompanyName) ? 1 : 0, LD[n.toLowerCase()] || '']; }).filter(x => x[1]); } catch (e) {}
     { const inB = {}; let maxId = 0; prep.ids.forEach(id => { inB[String(id)] = 1; maxId = Math.max(maxId, Number(id) || 0); });
-      const nw = dir.filter(x => !inB[x[0]] && !/client de passage|r[ée]ajustement/i.test(x[1]) && Number(x[0]) > maxId).map(x => x[0]);
+      const nw = dir.filter(x => !inB[x[0]] && x[5] && !/client de passage|r[ée]ajustement/i.test(x[1]) && (Number(x[0]) > maxId || x[6] >= '2026-11-18')).map(x => x[0]);
       if (nw.length && nw.length < 200) prep.ids = prep.ids.concat(nw); }
     const ids = [...new Set(prep.ids.map(String).concat(unpaidIds))]; const C = {};
     await pool(ids, 3, async id => { C[id] = await J('contacts/show/' + id); }, (d, t) => step(24 + 46 * d / t, 'Fiches clients ' + d + '/' + t + '…'));
