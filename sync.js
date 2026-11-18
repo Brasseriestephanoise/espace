@@ -49,7 +49,7 @@
     const recent = {}, dates = {};
     L.forEach(x => { const cid = name2id[nm(x.ContactComputedName)]; if (!cid) return; const c = d10(x.CreatedAt);
       if (x.Kind === 'Invoice' && c >= '2024') (dates[cid] = dates[cid] || []).push(c);
-      if (c >= lim) (recent[cid] = recent[cid] || []).push([x.Kind === 'Order' ? 'O' : 'I', x.Ref, c, d10(x.DeliverAfter), x.TotalExcludingVat / 100]); });
+      if (c >= lim) (recent[cid] = recent[cid] || []).push([x.Kind === 'Order' ? 'O' : 'I', x.Ref, c, d10(x.DeliverAfter), x.TotalExcludingVat / 100, (x.Tags || []).some(g => /devis/i.test(nm(g.Name))) ? 1 : 0]); }); // 6e valeur : 1 = devis
     const unpaid = L.filter(x => x.Kind === 'Invoice' && !x.IsReconciled && x.TotalIncludingVat > 0 && nm(x.ContactComputedName) !== 'Client de passage');
     for (const x of unpaid) { const k = nm(x.ContactComputedName); if (!name2id[k]) { const s = await J('invoices/show/' + x.Id); if (s && s.Contact && s.Contact.Id) name2id[k] = s.Contact.Id; await sleep(120); } }
     // 3. Fiches clients : base clients + clients avec impayés (coordonnées, grille, prix perso, adresses)
