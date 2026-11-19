@@ -63,7 +63,7 @@
       const nw = dir.filter(x => !inB[x[0]] && x[5] && !/client de passage|r[ée]ajustement/i.test(x[1]) && (Number(x[0]) > maxId || x[6] >= '2026-11-18')).map(x => x[0]);
       if (nw.length && nw.length < 200) prep.ids = prep.ids.concat(nw); }
     const ids = [...new Set(prep.ids.map(String).concat(unpaidIds))]; const C = {};
-    await pool(ids, 3, async id => { C[id] = await J('contacts/show/' + id); }, (d, t) => step(24 + 46 * d / t, 'Fiches clients ' + d + '/' + t + '…'));
+    await pool(ids, 3, async id => { try { C[id] = await J('contacts/show/' + id); } catch (e) { if (!/, 404\)/.test(e.message)) throw e; } }, (d, t) => step(24 + 46 * d / t, 'Fiches clients ' + d + '/' + t + '…'));
     // Adresse de la dernière livraison (factures et commandes, de la plus récente à la plus ancienne) : position sur la carte Prospection si la fiche n'a pas d'adresse de livraison.
     const LSA = {}; L.forEach(x => { const cid = name2id[nm(x.ContactComputedName)], ad = nm(x.ContactComputedShippingAddress).replace(/\s+/g, ' '); if (cid && ad && !LSA[cid]) LSA[cid] = ad; });
     const info = {}; ids.forEach(id => // coordonnées de tous les clients (impayés + base) : téléphones pour les tournées
