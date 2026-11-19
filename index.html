@@ -81,7 +81,7 @@ function vAcces(){const A=$("#app");if(!S.A){A.innerHTML=`<p class="muted">Charg
  <p class="muted" style="margin:0"><b>Membre</b> : ouvre les espaces cochés. <b>Administrateur</b> : en plus, gère cette page. Commandes groupées garde aussi sa propre liste d'accès : pensez à y ajouter la personne (<a href="${GROUPE}">espace Commandes groupées</a> › Accès).</p></section>`;}
 function readRow(tr){const o={email:tr.dataset.p||(tr.querySelector('[data-f="email"]')||{}).value||"",nom:tr.querySelector('[data-f="nom"]').value.trim(),role:tr.querySelector('[data-f="role"]').value,mods:[...tr.querySelectorAll("[data-m]")].filter(i=>i.checked).map(i=>i.dataset.m)};o.email=o.email.trim();return o;}
 document.addEventListener("click",async e=>{const t=e.target.closest("button");if(!t)return;const d=t.dataset;
- if(t.id==="out"){store.clear();try{google.accounts.id.disableAutoSelect();}catch(x){}S.u=null;S.msg="";S.view="home";S.A=null;render();return;}
+ if(t.id==="out"){const s0=(S.u&&S.u.s)||((store.get()||{}).s)||"";store.clear();try{["esp_h_pro","esp_h_prosp"].forEach(k=>localStorage.removeItem(k));Object.keys(localStorage).filter(k=>/^(espc1_|prosp_)/.test(k)).forEach(k=>localStorage.removeItem(k));}catch(x){}try{google.accounts.id.disableAutoSelect();}catch(x){}S.u=null;S.msg="";S.view="home";S.A=null;render();if(s0){try{await api("hub_logout",s0);}catch(x){}}return;}
  if(t.id==="inst"&&window.__bip){window.__bip.prompt();window.__bip=null;t.style.display="none";return;}
  if(d.acces!==undefined){S.view="acces";S.A=null;render();return;}
  if(d.home!==undefined){S.view="home";render();return;}
