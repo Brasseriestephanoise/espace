@@ -1,12 +1,12 @@
 {
-  "name": "Espace Brasserie Stéphanoise",
-  "short_name": "Espace",
+  "name": "Espace brasserie",
+  "short_name": "Brasserie",
   "id": "./",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#1D2420",
-  "theme_color": "#169164",
+  "theme_color": "#1D2420",
   "lang": "fr",
   "icons": [
     {
