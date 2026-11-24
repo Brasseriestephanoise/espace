@@ -32,7 +32,7 @@ a.tile,button.tile{display:flex;flex-direction:column;gap:8px;padding:22px;borde
 .tile:hover,.tile:focus-visible{transform:translateY(-2px);box-shadow:0 6px 18px rgba(29,36,32,.12);outline:none;border-color:#17936F}
 .tag{align-self:flex-start;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:3px 9px;border-radius:5px;background:#E2F2EC;color:#17936F}
 .tile.grp .tag{background:#F7F2E8;color:#B4580A}.tile.tk .tag{background:#FFF1D6;color:#9A5B00}
-.tile.hu .tag{background:#E3F1F5;color:#1F6F8B}.tile.pros .tag{background:#E6EEF8;color:#1F5FA8}.tile.acc .tag{background:#1D2420;color:#fff}
+.tile.hu .tag{background:#E3F1F5;color:#1F6F8B}.tile.ev .tag{background:#F3E8FF;color:#7B3FA0}.tile.pros .tag{background:#E6EEF8;color:#1F5FA8}.tile.acc .tag{background:#1D2420;color:#fff}
 .tile strong{font:700 27px/1.1 'Barlow Condensed',sans-serif}
 .tile .d{color:#5E6B64}.tile .go{margin-top:4px;font-weight:700;color:#17936F}
 .muted{color:#5E6B64;font-size:13px}.err{color:#B42318;font-weight:600}
@@ -76,6 +76,7 @@ function render(){const A=$("#app");$("#out").hidden=!S.u;$("#who").textContent=
  if(m.includes("groupe"))tiles.push(`<a class="tile grp" href="${GROUPE}"><span class="tag">Ventes groupées</span><strong>Commandes groupées</strong><span class="d">Ventes en cours, commandes des participants, distributions.</span><span class="go" style="color:#B4580A">Ouvrir →</span></a>`);
  if(tkTile&&!window.matchMedia("(max-width:700px)").matches)tiles.push(tkTile);
  if(m.includes("huitres"))tiles.push(`<a class="tile hu" href="${HUITRES}" target="_blank" rel="noopener"><span class="tag">Vente huîtres</span><strong>🦪 Caisse huîtres</strong><span class="d">Caisse de la vente d'huîtres Papytaine (s'ouvre dans un nouvel onglet).</span><span class="go" style="color:#1F6F8B">Ouvrir ↗</span></a>`);
+ if(m.includes("evenements"))tiles.push(`<a class="tile ev" href="evenements.html?s=${encodeURIComponent(S.u.s)}"><span class="tag">Réservations</span><strong>📅 Événements</strong><span class="d">Portes ouvertes, repas, ateliers : lien de réservation, inscrits, jour J.</span><span class="go" style="color:#7B3FA0">Ouvrir →</span></a>`);
  if(S.u.role==="admin")tiles.push(`<button class="tile acc" type="button" data-acces><span class="tag">Administration</span><strong>Accès</strong><span class="d">Qui peut ouvrir quels espaces, avec son compte Google.</span><span class="go" style="color:#1D2420">Gérer →</span></button>`);
  A.innerHTML=`<h1>Bonjour ${esc((S.u.nom||"").split(" ")[0]||"")}</h1><p class="sub">Vos outils, au même endroit.</p><div class="grid">${tiles.join("")||'<p class="muted">Aucun espace ne vous est encore ouvert.</p>'}</div><button id="inst" class="btn g" type="button">📲 Installer l'appli sur ce téléphone</button>${isIOS&&!installed?`<div class="ios"><b>📲 Installer l'appli sur l'iPhone</b><br>Ouvrez cette page dans <b>Safari</b>, touchez <b>Partager ⬆️</b> puis <b>« Sur l'écran d'accueil »</b>.</div>`:""}${S.u.dev?`<p class="muted" style="margin:0">Connexion longue (Tickets). Pour les autres espaces : <button class="btn g" type="button" data-relog>se connecter avec Google</button></p>`:""}`;
  if(window.__bip)$("#inst").style.display="block";}
