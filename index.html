@@ -60,7 +60,7 @@ const $=s=>document.querySelector(s), esc=s=>String(s??"").replace(/[&<>"]/g,c=>
 const S={u:null,view:"home",A:null,msg:"",conf:null};
 function toast(t){const e=$("#toast");e.textContent=t;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,2600);}
 async function api(fn,...args){const r=await fetch(API,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({fn,args})});const j=await r.json();if(!j.ok)throw new Error(j.err||"Erreur");return j.r;}
-const store={get(){try{const x=JSON.parse(localStorage.getItem("esp_s")||"null");return x&&x.exp>Date.now()?x:null;}catch(e){return null;}},set(u){try{localStorage.setItem("esp_s",JSON.stringify(Object.assign({},u,{exp:Date.now()+5.5*3600e3})));}catch(e){}},clear(){try{localStorage.removeItem("esp_s");}catch(e){}}};
+const store={get(){try{const x=JSON.parse(localStorage.getItem("esp_s")||"null");return x&&x.exp>Date.now()?x:null;}catch(e){return null;}},set(u){try{if(u&&u.email)localStorage.setItem("esp_last",u.email);localStorage.setItem("esp_s",JSON.stringify(Object.assign({},u,{exp:Date.now()+5.5*3600e3})));}catch(e){}},clear(){try{localStorage.removeItem("esp_s");}catch(e){}}};
 const tkStore={get(){try{const x=JSON.parse(localStorage.getItem("esp_tk")||"null");return x&&x.exp>Date.now()?x:null;}catch(e){return null;}},set(t,u){try{localStorage.setItem("esp_tk",JSON.stringify({t:t,nom:u.nom,email:u.email,exp:Date.now()+89*864e5}));}catch(e){}},clear(){try{localStorage.removeItem("esp_tk");}catch(e){}}};
 const HOME=new URLSearchParams(location.search).get("home")==="1";
 const isIOS=/iPhone|iPad|iPod/.test(navigator.userAgent),installed=window.matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
@@ -107,7 +107,7 @@ document.addEventListener("click",async e=>{const t=e.target.closest("button");i
 });
 let gsiDone=false;
 function gsi(){if(!window.google||!google.accounts||!google.accounts.id){setTimeout(gsi,200);return;}
- if(!gsiDone){gsiDone=true;google.accounts.id.initialize({client_id:GCID,callback:onCred,auto_select:true,cancel_on_tap_outside:false});}
+ if(!gsiDone){gsiDone=true;google.accounts.id.initialize({client_id:GCID,callback:onCred,auto_select:true,cancel_on_tap_outside:false,login_hint:(function(){try{return localStorage.getItem("esp_last")||undefined;}catch(e){return undefined;}})()});}
  const b=$("#gbtn");if(b){google.accounts.id.renderButton(b,{theme:"filled_blue",size:"large",text:"signin_with",shape:"pill",locale:"fr"});google.accounts.id.prompt();}}
 async function onCred(r){S.msg="";$("#app").innerHTML='<p class="muted">Connexion…</p>';
  try{const u=await api("hub_login",r.credential);if(!u.ok){S.msg=u.msg;S.u=null;try{google.accounts.id.disableAutoSelect();}catch(x){}render();return;}S.u=u;store.set(u);if(u.tk)tkStore.set(u.tk,u);S.view="home";render();}
